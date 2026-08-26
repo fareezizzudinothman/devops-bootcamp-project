@@ -10,7 +10,7 @@ data "aws_iam_policy_document" "ssm_assume_role" {
 }
 
 resource "aws_iam_role" "ssm" {
-  name               = "tf-rackula-ssm-role"
+  name               = "devops-ssm-role"
   assume_role_policy = data.aws_iam_policy_document.ssm_assume_role.json
 }
 
@@ -20,6 +20,6 @@ resource "aws_iam_role_policy_attachment" "ssm_core" {
 }
 
 resource "aws_iam_instance_profile" "ssm" {
-  name = "tf-rackula-ssm-profile"
+  name = "devops-ssm-profile"
   role = aws_iam_role.ssm.name
 }
