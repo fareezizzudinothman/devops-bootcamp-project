@@ -56,7 +56,7 @@ module "node2" {
   #  key_name               = "fareez-key"
   tags                 = { Name = "ansible" }
   root_block_device    = { size = 16 }
-  iam_instance_profile = aws_iam_instance_profile.ssm.name
+  iam_instance_profile = aws_iam_instance_profile.ansible.name
   user_data            = templatefile("userdata-ansible.sh", {})
 }
 
