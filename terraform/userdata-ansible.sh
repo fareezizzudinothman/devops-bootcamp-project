@@ -57,8 +57,24 @@ fi
 # =========================================================
 # Install Ansible AWS Collection
 # =========================================================
+#
+# amazon.aws provides the AWS SSM connection plugin:
+#
+#   amazon.aws.aws_ssm
+#
+# Install it for the ubuntu user so Ansible can use it.
+# =========================================================
 
-sudo -u ubuntu ansible-galaxy collection install amazon.aws
+sudo -u ubuntu ansible-galaxy collection install amazon.aws --upgrade
+
+# =========================================================
+# Verify AWS SSM connection plugin
+# =========================================================
+
+if ! sudo -u ubuntu ansible-doc -t connection -l | grep -q "amazon.aws.aws_ssm"; then
+  echo "ERROR: amazon.aws.aws_ssm connection plugin not found."
+  exit 1
+fi
 
 # =========================================================
 # Clone GitHub Repository
@@ -98,6 +114,12 @@ $(git --version)
 
 Python:
 $(python3 --version)
+
+AWS Collection:
+$(sudo -u ubuntu ansible-galaxy collection list | grep "amazon.aws" || true)
+
+SSM Connection Plugin:
+$(sudo -u ubuntu ansible-doc -t connection -l | grep "amazon.aws.aws_ssm" || true)
 
 Repository:
 $REPO_DIR
