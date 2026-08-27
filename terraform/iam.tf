@@ -23,3 +23,106 @@ resource "aws_iam_instance_profile" "ssm" {
   name = "devops-ssm-profile"
   role = aws_iam_role.ssm.name
 }
+
+# =========================================================
+# Ansible Controller Role
+# Used by Node2
+# =========================================================
+
+data "aws_iam_policy_document" "ansible_assume_role" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_role" "ansible" {
+  name               = "devops-ansible-role"
+  assume_role_policy = data.aws_iam_policy_document.ansible_assume_role.json
+}
+
+
+# =========================================================
+# Node2 must also be an SSM Managed Instance
+# =========================================================
+
+resource "aws_iam_role_policy_attachment" "ansible_ssm_core" {
+  role       = aws_iam_role.ansible.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
+
+# =========================================================
+# Permissions for Ansible Controller
+# =========================================================
+
+resource "aws_iam_role_policy" "ansible_controller" {
+  name = "devops-ansible-controller-policy"
+  role = aws_iam_role.ansible.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+
+    Statement = [
+
+      # -----------------------------------------------
+      # AWS Systems Manager
+      # -----------------------------------------------
+      {
+        Sid    = "SSMAccess"
+        Effect = "Allow"
+
+        Action = [
+          "ssm:StartSession",
+          "ssm:TerminateSession",
+          "ssm:ResumeSession",
+          "ssm:DescribeInstanceInformation"
+        ]
+
+        Resource = "*"
+      },
+
+      # -----------------------------------------------
+      # S3 bucket used by Ansible AWS SSM plugin
+      # -----------------------------------------------
+      {
+        Sid    = "S3BucketAccess"
+        Effect = "Allow"
+
+        Action = [
+          "s3:GetBucketLocation",
+          "s3:ListBucket"
+        ]
+
+        Resource = "arn:aws:s3:::devops-bootcamp-ansible-fareezizzudinothman"
+      },
+
+      {
+        Sid    = "S3ObjectAccess"
+        Effect = "Allow"
+
+        Action = [
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:DeleteObject"
+        ]
+
+        Resource = "arn:aws:s3:::devops-bootcamp-ansible-fareezizzudinothman/*"
+      }
+    ]
+  })
+}
+
+
+# =========================================================
+# Instance Profile for Node2
+# =========================================================
+
+resource "aws_iam_instance_profile" "ansible" {
+  name = "devops-ansible-profile"
+  role = aws_iam_role.ansible.name
+}
