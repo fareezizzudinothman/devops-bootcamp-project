@@ -1,0 +1,133 @@
+---
+# =========================================================
+# Prepare Ansible Controller
+# =========================================================
+
+- name: Prepare Ansible Controller
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+
+    # -----------------------------------------------------
+    # Install Docker Galaxy Role
+    # -----------------------------------------------------
+
+    - name: Install geerlingguy.docker Galaxy role
+      ansible.builtin.command:
+        cmd: ansible-galaxy role install geerlingguy.docker
+      changed_when: false
+
+    # -----------------------------------------------------
+    # Install Docker Ansible Collection
+    # -----------------------------------------------------
+
+    - name: Install community.docker collection
+      ansible.builtin.command:
+        cmd: ansible-galaxy collection install community.docker
+      changed_when: false
+
+
+# =========================================================
+# Configure Node1
+# =========================================================
+
+- name: Configure and deploy application to Node1
+  hosts: webservers
+  become: true
+  gather_facts: true
+
+  tasks:
+
+    # -----------------------------------------------------
+    # Install Docker using Galaxy role
+    # -----------------------------------------------------
+
+    - name: Install Docker
+      ansible.builtin.include_role:
+        name: geerlingguy.docker
+
+
+    # -----------------------------------------------------
+    # Create ssm-user
+    # -----------------------------------------------------
+
+    - name: Ensure ssm-user exists
+      ansible.builtin.user:
+        name: ssm-user
+        state: present
+        create_home: true
+
+
+    # -----------------------------------------------------
+    # Add ssm-user to Docker group
+    # -----------------------------------------------------
+
+    - name: Add ssm-user to docker group
+      ansible.builtin.user:
+        name: ssm-user
+        groups:
+          - docker
+        append: true
+
+
+    # -----------------------------------------------------
+    # Install Python Docker SDK
+    # Required by community.docker modules
+    # -----------------------------------------------------
+
+    - name: Install Python Docker SDK
+      ansible.builtin.apt:
+        name: python3-docker
+        state: present
+        update_cache: true
+
+
+    # -----------------------------------------------------
+    # Clone / update application repository
+    # -----------------------------------------------------
+
+    - name: Clone application repository
+      ansible.builtin.git:
+        repo: "https://github.com/fareezizzudinothman/devops-bootcamp-project.git"
+        dest: /opt/devops-bootcamp-project
+        version: main
+        force: true
+
+
+    # -----------------------------------------------------
+    # Build application Docker image
+    # -----------------------------------------------------
+
+    - name: Build application Docker image
+      community.docker.docker_image:
+        name: devops-bootcamp-app
+        source: build
+        build:
+          path: /opt/devops-bootcamp-project/app
+        force_source: true
+
+
+    # -----------------------------------------------------
+    # Remove previous application container
+    # -----------------------------------------------------
+
+    - name: Remove previous application container
+      community.docker.docker_container:
+        name: devops-app
+        state: absent
+
+
+    # -----------------------------------------------------
+    # Start application container
+    # -----------------------------------------------------
+
+    - name: Start application container
+      community.docker.docker_container:
+        name: devops-app
+        image: devops-bootcamp-app
+        state: started
+        restart_policy: unless-stopped
+        published_ports:
+          - "80:80"

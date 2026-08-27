@@ -27,7 +27,7 @@ module "node1" {
   tags                 = { Name = "webserver" }
   root_block_device    = { size = 16 }
   iam_instance_profile = aws_iam_instance_profile.ssm.name
-  user_data            = templatefile("userdata-nginx.sh", {})
+  #user_data            = templatefile("userdata-nginx.sh", {})
 }
 
 resource "aws_eip" "node1" {
