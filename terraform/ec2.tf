@@ -57,6 +57,7 @@ module "node2" {
   tags                 = { Name = "ansible" }
   root_block_device    = { size = 16 }
   iam_instance_profile = aws_iam_instance_profile.ssm.name
+  user_data            = templatefile("userdata-ansible.sh", {})
 }
 
 
