@@ -1,9 +1,8 @@
 name: CI/CD
 
 on:
-  push:
-    branches:
-      - main
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
 
 permissions:
   id-token: write
@@ -14,9 +13,46 @@ env:
   ECR_REPOSITORY: devops-bootcamp-app
 
 jobs:
+#create PR
+  test:
+    name: Test Application
+    if: github.event.pull_request.merged == false
+    runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: app
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run preflight tests
+        run: npm test
+
+      - name: Run unit tests
+        run: npm run test:unit
+
+      - name: Build application
+        run: npm run build
+
+#Merge PR
   build-and-push:
     name: Build and Push Docker Image
+    needs: test
+    if: always() && github.event.pull_request.merged == true
+    
     runs-on: ubuntu-latest
 
     steps:
