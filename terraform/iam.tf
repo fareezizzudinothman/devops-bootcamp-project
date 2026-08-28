@@ -327,7 +327,8 @@ resource "aws_iam_role_policy" "github_actions_ssm" {
         Effect = "Allow"
 
         Action = [
-          "ssm:SendCommand"
+          "ssm:SendCommand",
+          "ssm:GetCommandInvocation"
         ]
 
         Resource = "*"
