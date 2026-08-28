@@ -1,0 +1,81 @@
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: ap-southeast-1
+  ECR_REPOSITORY: devops-bootcamp-app
+
+jobs:
+
+  build-and-push:
+    name: Build and Push Docker Image
+    runs-on: ubuntu-latest
+
+    steps:
+
+      # -----------------------------------------------------
+      # Checkout source code
+      # -----------------------------------------------------
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+
+      # -----------------------------------------------------
+      # Configure AWS using GitHub OIDC
+      # -----------------------------------------------------
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::990723917403:role/devops-github-actions-role
+          aws-region: ${{ env.AWS_REGION }}
+
+
+      # -----------------------------------------------------
+      # Login to Amazon ECR
+      # -----------------------------------------------------
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+
+      # -----------------------------------------------------
+      # Set Docker image
+      # -----------------------------------------------------
+
+      - name: Set image URI
+        id: image
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        run: |
+          echo "image=$REGISTRY/${ECR_REPOSITORY}:${GITHUB_SHA}" >> "$GITHUB_OUTPUT"
+
+
+      # -----------------------------------------------------
+      # Build Docker image
+      # -----------------------------------------------------
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            -t "${{ steps.image.outputs.image }}" \
+            ./app
+
+
+      # -----------------------------------------------------
+      # Push Docker image to ECR
+      # -----------------------------------------------------
+
+      - name: Push Docker image
+        run: |
+          docker push "${{ steps.image.outputs.image }}"
