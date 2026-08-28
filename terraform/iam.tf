@@ -250,11 +250,11 @@ data "aws_iam_policy_document" "github_actions_assume_role" {
     }
 
     condition {
-      test     = "StringLike"
+      test     = "StringEquals"
       variable = "token.actions.githubusercontent.com:sub"
-
+# kena pakai repo id dan user ID sendiri
       values = [
-        "repo:fareezizzudinothman/devops-bootcamp-project:*"
+        "repo:fareezizzudinothman@288671351/devops-bootcamp-project@1346851375:ref:refs/heads/main"
       ]
     }
   }
