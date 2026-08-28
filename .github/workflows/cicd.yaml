@@ -78,3 +78,16 @@ jobs:
       - name: Push Docker image
         run: |
           docker push "${{ steps.image.outputs.image }}"
+
+      
+      # -----------------------------------------------------
+      # Trigger deployment on Node2 through AWS SSM
+      # -----------------------------------------------------
+
+      - name: Deploy through Node2
+        run: |
+          aws ssm send-command \
+            --instance-ids i-06ebb0259174573c5 \
+            --document-name "AWS-RunShellScript" \
+            --parameters 'commands=["/home/ubuntu/devops-bootcamp-project/ansible/deploy.sh ${{ github.sha }}"]' \
+            --region "${AWS_REGION}"
