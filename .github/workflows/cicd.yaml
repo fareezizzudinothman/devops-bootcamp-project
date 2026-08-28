@@ -2,7 +2,11 @@ name: CI/CD
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened, closed]
+    types: [opened, synchronize, reopened]
+
+  push:
+    branches:
+      - main
 
 permissions:
   id-token: write
@@ -16,7 +20,7 @@ jobs:
 #create PR
   test:
     name: Test Application
-    if: github.event.pull_request.merged == false
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
 
     defaults:
@@ -50,8 +54,7 @@ jobs:
 #Merge PR
   build-and-push:
     name: Build and Push Docker Image
-    needs: test
-    if: always() && github.event.pull_request.merged == true
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     
     runs-on: ubuntu-latest
 
