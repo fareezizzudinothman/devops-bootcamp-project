@@ -336,3 +336,30 @@ resource "aws_iam_role_policy" "github_actions_ssm" {
     ]
   })
 }
+
+# =========================================================
+# GitHub Actions - EC2 Discovery Permission
+# Used to dynamically find Node2
+# =========================================================
+
+resource "aws_iam_role_policy" "github_actions_ec2" {
+  name = "devops-github-actions-ec2"
+  role = aws_iam_role.github_actions.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+
+    Statement = [
+      {
+        Sid    = "EC2Describe"
+        Effect = "Allow"
+
+        Action = [
+          "ec2:DescribeInstances"
+        ]
+
+        Resource = "*"
+      }
+    ]
+  })
+}
