@@ -38,6 +38,9 @@
   become: true
   gather_facts: true
 
+  vars:
+    image_tag: v1
+
   tasks:
 
     # -----------------------------------------------------
@@ -131,7 +134,7 @@
 
     - name: Pull application image
       community.docker.docker_image:
-        name: "990723917403.dkr.ecr.ap-southeast-1.amazonaws.com/devops-bootcamp-app:v1"
+        name: "990723917403.dkr.ecr.ap-southeast-1.amazonaws.com/devops-bootcamp-app:{{ image_tag }}"
         source: pull
 
 
@@ -152,7 +155,7 @@
     - name: Start application container
       community.docker.docker_container:
         name: devops-app
-        image: "990723917403.dkr.ecr.ap-southeast-1.amazonaws.com/devops-bootcamp-app:v1"
+        image: "990723917403.dkr.ecr.ap-southeast-1.amazonaws.com/devops-bootcamp-app:{{ image_tag }}"
         state: started
         restart_policy: unless-stopped
         published_ports:
