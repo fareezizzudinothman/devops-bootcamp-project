@@ -81,7 +81,7 @@ jobs:
 
       
       # -----------------------------------------------------
-      # Trigger deployment on Node2 through AWS SSM + test
+      # Trigger deployment on Node2 through AWS SSM + test2
       # -----------------------------------------------------
 
       - name: Deploy through Node2
