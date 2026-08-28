@@ -41,12 +41,37 @@
   tasks:
 
     # -----------------------------------------------------
-    # Install Docker using Galaxy role
+    # Install Docker using Galaxy role ,package and AWS CLI
     # -----------------------------------------------------
 
     - name: Install Docker
       ansible.builtin.include_role:
         name: geerlingguy.docker
+        
+    - name: Install required packages
+      ansible.builtin.apt:
+        name:
+          - curl
+          - unzip
+        state: present
+        update_cache: true
+ 
+    - name: Check AWS CLI
+      ansible.builtin.command:
+        cmd: aws --version
+      register: aws_cli_check
+      failed_when: false
+      changed_when: false
+
+    - name: Install AWS CLI v2
+      ansible.builtin.shell:
+        cmd: |
+          curl -fsSL https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o /tmp/awscliv2.zip
+          rm -rf /tmp/aws
+          unzip -q /tmp/awscliv2.zip -d /tmp
+          /tmp/aws/install
+          rm -rf /tmp/aws /tmp/awscliv2.zip
+      when: aws_cli_check.rc != 0
 
 
     # -----------------------------------------------------
@@ -84,29 +109,30 @@
         update_cache: true
 
 
-    # -----------------------------------------------------
-    # Clone / update application repository
-    # -----------------------------------------------------
-
-    - name: Clone application repository
-      ansible.builtin.git:
-        repo: "https://github.com/fareezizzudinothman/devops-bootcamp-project.git"
-        dest: /opt/devops-bootcamp-project
-        version: main
-        force: true
-
-
-    # -----------------------------------------------------
-    # Build application Docker image
+# -----------------------------------------------------
+    # Login to Amazon ECR
     # -----------------------------------------------------
 
-    - name: Build application Docker image
+    - name: Login to Amazon ECR
+      ansible.builtin.shell:
+        cmd: |
+          aws ecr get-login-password --region ap-southeast-1 |
+          docker login \
+            --username AWS \
+            --password-stdin \
+            990723917403.dkr.ecr.ap-southeast-1.amazonaws.com
+      register: ecr_login
+      changed_when: "'Login Succeeded' in ecr_login.stdout"
+
+
+    # -----------------------------------------------------
+    # Pull application image from ECR
+    # -----------------------------------------------------
+
+    - name: Pull application image
       community.docker.docker_image:
-        name: devops-bootcamp-app
-        source: build
-        build:
-          path: /opt/devops-bootcamp-project/app
-        force_source: true
+        name: "990723917403.dkr.ecr.ap-southeast-1.amazonaws.com/devops-bootcamp-app:v1"
+        source: pull
 
 
     # -----------------------------------------------------
@@ -126,7 +152,7 @@
     - name: Start application container
       community.docker.docker_container:
         name: devops-app
-        image: devops-bootcamp-app
+        image: "990723917403.dkr.ecr.ap-southeast-1.amazonaws.com/devops-bootcamp-app:v1"
         state: started
         restart_policy: unless-stopped
         published_ports:
