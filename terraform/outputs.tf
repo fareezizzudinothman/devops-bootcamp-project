@@ -25,3 +25,8 @@ output "ssm_command_node2_ansible" {
 output "ssm_command_node3_monitoring" {
   value = "aws ssm start-session --target ${module.node3.id}"
 }
+
+output "ecr_repository_url" {
+  description = "ECR repository URL for the application"
+  value       = aws_ecr_repository.app.repository_url
+}
