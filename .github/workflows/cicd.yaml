@@ -54,6 +54,7 @@ jobs:
 #Merge PR
   build-and-push:
     name: Build and Push Docker Image
+    needs: test
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     
     runs-on: ubuntu-latest
@@ -118,15 +119,43 @@ jobs:
         run: |
           docker push "${{ steps.image.outputs.image }}"
 
+
+      # -----------------------------------------------------
+      # Find Node2 dynamically- for next action instance IDs
+      # -----------------------------------------------------
+
+      - name: Find Node2 instance
+        id: node2
+        run: |
+          NODE2_INSTANCE_ID=$(aws ec2 describe-instances \
+            --filters \
+              "Name=tag:Name,Values=node2" \
+              "Name=instance-state-name,Values=running" \
+            --query 'Reservations[0].Instances[0].InstanceId' \
+            --output text \
+            --region "${AWS_REGION}")
+
+          echo "Node2 Instance ID: $NODE2_INSTANCE_ID"
+
+          if [ "$NODE2_INSTANCE_ID" = "None" ] || [ -z "$NODE2_INSTANCE_ID" ]; then
+            echo "ERROR: Node2 instance not found"
+            exit 1
+          fi
+
+          echo "instance_id=$NODE2_INSTANCE_ID" >> "$GITHUB_OUTPUT"
       
       # -----------------------------------------------------
-      # Trigger deployment on Node2 through AWS SSM + test2
+      # Trigger deployment on Node2 through AWS SSM
       # -----------------------------------------------------
 
       - name: Deploy through Node2
         run: |
+          NODE2_INSTANCE_ID="${{ steps.node2.outputs.instance_id }}"
+
+          echo "Deploying through Node2: $NODE2_INSTANCE_ID"
+
           COMMAND_ID=$(aws ssm send-command \
-            --instance-ids i-06ebb0259174573c5 \
+            --instance-ids "$NODE2_INSTANCE_ID" \
             --document-name "AWS-RunShellScript" \
             --parameters 'commands=["sudo -u ubuntu /home/ubuntu/devops-bootcamp-project/ansible/deploy.sh ${{ github.sha }}"]' \
             --region "${AWS_REGION}" \
@@ -137,7 +166,7 @@ jobs:
 
           aws ssm wait command-executed \
             --command-id "$COMMAND_ID" \
-            --instance-id i-06ebb0259174573c5 \
+            --instance-id "$NODE2_INSTANCE_ID" \
             --region "${AWS_REGION}"
 
           echo "========================================"
@@ -146,5 +175,5 @@ jobs:
 
           aws ssm get-command-invocation \
             --command-id "$COMMAND_ID" \
-            --instance-id i-06ebb0259174573c5 \
+            --instance-id "$NODE2_INSTANCE_ID" \
             --region "${AWS_REGION}"
