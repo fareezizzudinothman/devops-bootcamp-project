@@ -4,7 +4,7 @@
   <img src="docs/architecture.png" alt="DevOps CI/CD Architecture" width="100%">
 </p>
 
-A complete AWS DevOps project demonstrating **Infrastructure as Code, configuration management, containerization, private container registry, AWS Systems Manager, and GitHub Actions CI/CD**.
+aA complete AW S DevOps project demonstrating **Infrastructure as Code, configuration management, containerization, private container registry, AWS Systems Manager, and GitHub Actions CI/CD**.
 
 ---
 
