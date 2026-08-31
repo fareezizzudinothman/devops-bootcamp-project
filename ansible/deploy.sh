@@ -34,16 +34,35 @@ echo "Pulling latest repository..."
 git pull origin main
 
 # ---------------------------------------------------------
-# Run Ansible deployment
+# Install Ansible Galaxy dependencies
 # ---------------------------------------------------------
 
 cd "$REPO_DIR/ansible"
+
+echo "Installing Ansible Galaxy dependencies..."
+
+ansible-galaxy install -r requirements.yml
+
+# ---------------------------------------------------------
+# Run Ansible deployment
+# ---------------------------------------------------------
 
 echo "Running Ansible deployment..."
 
 ansible-playbook \
   playbooks/playbooks-nginx-deploy.yaml \
   -e "image_tag=$IMAGE_TAG"
+
+
+# ---------------------------------------------------------
+# Deploy Node Exporter
+# ---------------------------------------------------------
+
+echo "Running Node Exporter deployment..."
+
+ansible-playbook \
+  playbooks/playbooks-node-exporter.yaml
+
 
 echo "========================================"
 echo "Deployment completed"
