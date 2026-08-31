@@ -1,0 +1,5 @@
+collections:
+  - name: prometheus.prometheus
+
+roles:
+  - name: prometheus.prometheus.node_exporter
