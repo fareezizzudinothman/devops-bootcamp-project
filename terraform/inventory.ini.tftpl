@@ -1,8 +1,16 @@
 [webservers]
 node1 ansible_host=${node1_ip} ansible_aws_ssm_instance_id=${node1_id}
 
+[ansible]
+node2 ansible_host=${node2_ip} ansible_aws_ssm_instance_id=${node2_id}
+
 [monitoring]
 node3 ansible_host=${node3_ip} ansible_aws_ssm_instance_id=${node3_id}
+
+[nodes:children]
+webservers
+ansible
+monitoring
 
 [all:vars]
 ansible_connection=amazon.aws.aws_ssm
