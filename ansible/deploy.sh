@@ -55,7 +55,7 @@ ansible-playbook \
 
 
 # ---------------------------------------------------------
-# Deploy Node Exporter
+# Deploy Node Exporter 3 node
 # ---------------------------------------------------------
 
 echo "Running Node Exporter deployment..."
