@@ -2,7 +2,9 @@
   hosts: node3
   become: true
   vars:
-    docker_users: [ubuntu]
+    docker_users:
+    - ubuntu
+    - ssm-user
   roles:
     - geerlingguy.docker
   tasks:
