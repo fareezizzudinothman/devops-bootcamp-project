@@ -13,12 +13,12 @@
 
     - name: Hantar prometheus.yaml
       copy:
-        src: monitoring/prometheus.yaml
+        src: ../Monitoring/prometheus.yaml
         dest: /opt/monitoring/prometheus.yaml
 
     - name: Hantar compose.yaml
       copy:
-        src: monitoring/compose.yaml
+        src: ../Monitoring/compose.yaml
         dest: /opt/monitoring/compose.yaml
 
     - name: Naikkan container
