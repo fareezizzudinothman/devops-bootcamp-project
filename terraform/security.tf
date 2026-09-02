@@ -1,3 +1,7 @@
+data "http" "myip" {
+  url = "https://ifconfig.me/ip"
+}
+
 module "public_sg" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "~> 6.0"
@@ -26,6 +30,21 @@ module "public_sg" {
       to_port     = 9100
       description = "Prometheus scraping Node Exporter"
     }
+
+    prometheus = {
+      cidr_ipv4   = "${chomp(data.http.myip.response_body)}/32"
+      ip_protocol = "tcp"
+      from_port   = 9090
+      to_port     = 9090
+    }
+
+    grafana = {
+      cidr_ipv4   = "${chomp(data.http.myip.response_body)}/32"
+      ip_protocol = "tcp"
+      from_port   = 3000
+      to_port     = 3000
+    }
+    
   }
 
   egress_rules = {

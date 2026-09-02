@@ -63,6 +63,14 @@ echo "Running Node Exporter deployment..."
 ansible-playbook \
   playbooks/playbooks-node-exporter.yaml
 
+# ---------------------------------------------------------
+# Deploy prometheus dan grafana node3
+# ---------------------------------------------------------
+
+echo "Running prometheus dan grafana deployment..."
+
+ansible-playbook \
+  playbooks/playbooks-monitoring.yaml
 
 echo "========================================"
 echo "Deployment completed"
