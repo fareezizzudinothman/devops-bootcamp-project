@@ -75,7 +75,8 @@ module "node3" {
   tags                 = { Name = "monitoring" }
   root_block_device    = { size = 16 }
   iam_instance_profile = aws_iam_instance_profile.monitoring.name
-  user_data = templatefile("userdata-tunnel.sh", {
-    tunnel_token = data.aws_ssm_parameter.token.value
-  })
+  #iam_instance_profile = aws_iam_instance_profile.webserver.name
+  #user_data = templatefile("userdata-tunnel.sh", {
+  #  tunnel_token = data.aws_ssm_parameter.token.value
+  #})
 }
