@@ -18,7 +18,7 @@
 
     - name: Hantar compose.yaml
       copy:
-        src: /monitoring/compose.yaml
+        src: monitoring/compose.yaml
         dest: /opt/monitoring/compose.yaml
 
     - name: Naikkan container
