@@ -1,5 +1,5 @@
 - name: Naikkan stack pemantauan
-  hosts: node3
+  hosts: monitoring
   become: true
   vars:
     docker_users:
