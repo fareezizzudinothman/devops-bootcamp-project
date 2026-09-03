@@ -1,0 +1,36 @@
+- name: Configure Cloudflare Tunnel
+  hosts: monitoring
+  become: true
+
+  tasks:
+
+    - name: Install AWS CLI
+      apt:
+        name: awscli
+        state: present
+        update_cache: true
+
+    - name: Ambil tunnel token dari AWS SSM
+      shell: >
+        aws ssm get-parameter
+        --name "/devops-bootcamp-2026/tunnel-token"
+        --with-decryption
+        --query "Parameter.Value"
+        --output text
+      register: tunnel_token
+      no_log: true
+      changed_when: false
+
+    - name: Simpan tunnel token
+      copy:
+        content: "{{ tunnel_token.stdout }}"
+        dest: /opt/monitoring/tunnel-token
+        owner: root
+        group: root
+        mode: "0600"
+      no_log: true
+
+    - name: Start Cloudflare Tunnel
+      command: docker compose -f compose.yaml up -d cloudflared
+      args:
+        chdir: /opt/monitoring

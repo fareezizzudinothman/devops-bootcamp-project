@@ -72,6 +72,15 @@ echo "Running prometheus dan grafana deployment..."
 ansible-playbook \
   playbooks/playbooks-monitoring.yaml
 
+# ---------------------------------------------------------
+# Deploy Cloudflared node3
+# ---------------------------------------------------------
+
+echo "Running Cloudflared deployment..."
+
+ansible-playbook \
+  playbooks/playbooks-cloudflare.yaml
+
 echo "========================================"
 echo "Deployment completed"
 echo "Image: $IMAGE_TAG"

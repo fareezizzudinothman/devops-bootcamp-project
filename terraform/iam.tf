@@ -193,6 +193,28 @@ resource "aws_iam_role_policy_attachment" "monitoring_ssm" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
+# Allow Node3 to read Cloudflare Tunnel token from SSM Parameter Store
+data "aws_iam_policy_document" "monitoring_parameter" {
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "ssm:GetParameter"
+    ]
+
+    resources = [
+      "arn:aws:ssm:ap-southeast-1:${data.aws_caller_identity.my_account.account_id}:parameter/devops-bootcamp-2026/tunnel-token"
+    ]
+  }
+}
+
+resource "aws_iam_role_policy" "monitoring_parameter" {
+  name   = "devops-monitoring-parameter-access"
+  role   = aws_iam_role.monitoring.name
+  policy = data.aws_iam_policy_document.monitoring_parameter.json
+}
+
+
 resource "aws_iam_instance_profile" "monitoring" {
   name = "devops-monitoring-profile"
   role = aws_iam_role.monitoring.name
