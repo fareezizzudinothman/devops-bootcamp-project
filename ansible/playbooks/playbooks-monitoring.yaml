@@ -24,6 +24,6 @@
         dest: /opt/monitoring/compose.yaml
 
     - name: Naikkan container
-      command: docker compose up -d
+      command: docker compose up -d prometheus grafana
       args:
         chdir: /opt/monitoring
