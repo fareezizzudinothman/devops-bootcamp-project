@@ -23,15 +23,11 @@ services:
       - --no-autoupdate
       - run
       - --token-file
-      - /run/secrets/tunnel_token
-    secrets:
-      - tunnel_token
+      - /etc/cloudflared/tunnel-token
+    volumes:
+      - ./tunnel-token:/etc/cloudflared/tunnel-token:ro
     restart: unless-stopped
 
 
 volumes:
   grafana-data:
-
-secrets:
-  tunnel_token:
-    file: ./tunnel-token
