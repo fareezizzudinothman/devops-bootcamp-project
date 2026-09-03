@@ -4,12 +4,6 @@
 
   tasks:
 
-    - name: Install AWS CLI
-      apt:
-        name: awscli
-        state: present
-        update_cache: true
-
     - name: Download AWS CLI v2
       get_url:
         url: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
