@@ -41,7 +41,7 @@
       no_log: true
       changed_when: false
 
-    - name: Simpan tunnel token dekat node3
+    - name: Simpan tunnel token di node3
       copy:
         content: "{{ tunnel_token.stdout }}"
         dest: /opt/monitoring/tunnel-token
