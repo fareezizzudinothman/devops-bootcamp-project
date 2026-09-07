@@ -1,6 +1,6 @@
-data "http" "myip" {
-  url = "https://ifconfig.me/ip"
-}
+#data "http" "myip" {
+#  url = "https://ifconfig.me/ip"
+#}
 
 module "public_sg" {
   source  = "terraform-aws-modules/security-group/aws"
@@ -67,19 +67,19 @@ module "private_sg" {
       description = "Node Exporter from public subnet"
     }
 
-    prometheus = {
-      cidr_ipv4   = "${chomp(data.http.myip.response_body)}/32"
-      ip_protocol = "tcp"
-      from_port   = 9090
-      to_port     = 9090
-    }
+    #    prometheus = {
+    #      cidr_ipv4   = "${chomp(data.http.myip.response_body)}/32"
+    #      ip_protocol = "tcp"
+    #      from_port   = 9090
+    #      to_port     = 9090
+    #    }
 
-    grafana = {
-      cidr_ipv4   = "${chomp(data.http.myip.response_body)}/32"
-      ip_protocol = "tcp"
-      from_port   = 3000
-      to_port     = 3000
-    }
+    #    grafana = {
+    #      cidr_ipv4   = "${chomp(data.http.myip.response_body)}/32"
+    #      ip_protocol = "tcp"
+    #      from_port   = 3000
+    #      to_port     = 3000
+    #    }
 
   }
 
