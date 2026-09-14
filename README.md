@@ -22,7 +22,7 @@ Ini cara nak jalankan apps SHIP ni.
 11) Boleh SSM ke Ansible controller server untuk run command di webserver dan monitoring server.  
 10) Untuk apps boleh di access melalui https://kapal.fareezizzudinothman.com  
 11) Untuk monitoring prometheus di access melalui https://prometheus.fareezizzudinothman.com  
-12) Untuk monitoring Grafana di access melalui https://grafana.fareezizzudinothman.com (username = admin, password =admin)  
+12) Untuk monitoring Grafana di access melalui https://grafana.fareezizzudinothman.com (username = admin, password =Lemontree123@)  
 13) Github Page access di sini ya https://devops.fareezizzudinothman.com/  
 
 Selebihnya Cikgu refer dekat bawah la ya. Terima Kasih Cikgu.
