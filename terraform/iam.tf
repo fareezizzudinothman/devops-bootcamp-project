@@ -1,31 +1,3 @@
-# node3 iam role
-
-data "aws_iam_policy_document" "ssm_assume_role" {
-  statement {
-    actions = ["sts:AssumeRole"]
-
-    principals {
-      type        = "Service"
-      identifiers = ["ec2.amazonaws.com"]
-    }
-  }
-}
-
-resource "aws_iam_role" "ssm" {
-  name               = "devops-ssm-role"
-  assume_role_policy = data.aws_iam_policy_document.ssm_assume_role.json
-}
-
-resource "aws_iam_role_policy_attachment" "ssm_core" {
-  role       = aws_iam_role.ssm.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
-}
-
-resource "aws_iam_instance_profile" "ssm" {
-  name = "devops-ssm-profile"
-  role = aws_iam_role.ssm.name
-}
-
 # =========================================================
 # Ansible Controller Role
 # Used by Node2
@@ -47,8 +19,6 @@ resource "aws_iam_role" "ansible" {
   assume_role_policy = data.aws_iam_policy_document.ansible_assume_role.json
 }
 
-
-# =========================================================
 # Node2 must also be an SSM Managed Instance
 # =========================================================
 
@@ -57,8 +27,6 @@ resource "aws_iam_role_policy_attachment" "ansible_ssm_core" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
-
-# =========================================================
 # Permissions for Ansible Controller
 # =========================================================
 
@@ -71,7 +39,6 @@ resource "aws_iam_role_policy" "ansible_controller" {
 
     Statement = [
 
-      # -----------------------------------------------
       # AWS Systems Manager
       # -----------------------------------------------
       {
@@ -88,7 +55,6 @@ resource "aws_iam_role_policy" "ansible_controller" {
         Resource = "*"
       },
 
-      # -----------------------------------------------
       # S3 bucket used by Ansible AWS SSM plugin
       # -----------------------------------------------
       {
@@ -120,7 +86,6 @@ resource "aws_iam_role_policy" "ansible_controller" {
 }
 
 
-# =========================================================
 # Instance Profile for Node2
 # =========================================================
 
@@ -131,7 +96,7 @@ resource "aws_iam_instance_profile" "ansible" {
 
 
 
-
+# =========================================================
 # Node1 - Webserver Role
 # =========================================================
 
@@ -168,7 +133,7 @@ resource "aws_iam_instance_profile" "webserver" {
 
 
 
-
+# =========================================================
 # Node3 - Monitoring Role
 # =========================================================
 
