@@ -13,7 +13,7 @@ Ini cara nak jalankan apps SHIP ni.
 2) Masuk ke folder terraform dan jalan kan (terrafom init, terraform validate,terraform plan) seterus itu (terraform apply -auto-approve).
 3) Setelah selesai di Local PC akan ada updated iniventory.ini dalam Ansible folder.
 4) Cipta Branch baharu (git checkout -b "initial") add dan commit inventory.ini (git add inventory.ini && git commit -m 'initial setup').
-5) Push commit tersebut (git push origin initial) dan create PR (gh pr create --fill) untuk jalan kan CI dan Merge PR (gh pr merge --squash -auto-delete) untuk jalan kan CD.
+5) Push commit tersebut (git push origin initial) dan create PR (gh pr create --fill) untuk jalan kan CI dan Merge PR (gh pr merge --squash --delete-branch) untuk jalan kan CD.
 6) Di github bahagian action anda akan nampak process CICD berjalan.
 7) Dalam process CDCI akan jalan kan ansible playbooks untuk setup docker dan nginx di webserver dan prometheus, grafana, cloudflared di monitoring server.
 8) Login di cloudflare dan add record DNS baru dan masuk kan public IP untuk webserver .Boleh dapat kan Public IP di (terraform output).
