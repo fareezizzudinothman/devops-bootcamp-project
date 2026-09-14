@@ -5,24 +5,27 @@
 </p>
 
 
-Hai Cikgu Arif, 
+Assalamualaikum & Hai Cikgu Arif,  
 
-Ini cara nak jalankan apps SHIP ni.
+Ini cara nak jalankan apps SHIP ni.  
 
-1) Clone Repo ini di local PC.
-2) Masuk ke folder terraform dan jalan kan (terrafom init, terraform validate,terraform plan) seterus itu (terraform apply -auto-approve).
-3) Setelah selesai di Local PC akan ada updated iniventory.ini dalam Ansible folder.
-4) Cipta Branch baharu (git checkout -b "initial") add dan commit inventory.ini (git add inventory.ini && git commit -m 'initial setup').
-5) Push commit tersebut (git push origin initial) dan create PR (gh pr create --fill) untuk jalan kan CI dan Merge PR (gh pr merge --squash --delete-branch) untuk jalan kan CD.
-6) Di github bahagian action anda akan nampak process CICD berjalan.
-7) Dalam process CDCI akan jalan kan ansible playbooks untuk setup docker dan nginx di webserver dan prometheus, grafana, cloudflared di monitoring server.
-8) Login di cloudflare dan add record DNS baru dan masuk kan public IP untuk webserver .Boleh dapat kan Public IP di (terraform output).
-9) Untuk monitoring pulak boleh setup cloudflare tunnel, dpaat kan tunnel-token dan masuk kan internal IP monitoring server. 
-10)Segala perubahan dalam file ansible boleh di lakukan di local PC sahaja dan push ke github. Github kan jalankan CICD dan deploy akan berjalan di ansible controller server secara automatic dan tidak perlu SSM ke ansible server untuk jalan kan ansible playbooks.
-11)Boleh SSM ke Ansible controller server untuk run command di webserver dan monitoring server. 
-10) Untuk apps boleh di access melalui https://kapal.fareezizzudinothman.com
-11) Untuk monitoring prometheus di access melalui https://prometheus.fareezizzudinothman.com
-12)Untuk monitoring Grafana di access melalui https://grafana.fareezizzudinothman.com (username = admin, password =admin)
+1) Clone Repo ini di local PC.  
+2) Masuk ke folder terraform dan jalan kan (terrafom init, terraform validate,terraform plan) seterus itu (terraform apply -auto-approve).  
+3) Setelah selesai di Local PC akan ada updated iniventory.ini dalam Ansible folder.  
+4) Cipta Branch baharu (git checkout -b "initial") add dan commit inventory.ini (git add inventory.ini && git commit -m 'initial setup').  
+5) Push commit tersebut (git push origin initial) dan create PR (gh pr create --fill) untuk jalan kan CI dan Merge PR (gh pr merge --squash --delete-branch) untuk jalan kan CD.  
+6) Di github bahagian action anda akan nampak process CICD berjalan.  
+7) Dalam process CDCI akan jalan kan ansible playbooks untuk setup docker dan nginx di webserver dan prometheus, grafana, cloudflared di monitoring server.  
+8) Login di cloudflare dan add record DNS baru dan masuk kan public IP untuk webserver. Boleh dapat kan Public IP di (terraform output).  
+9) Untuk monitoring pulak boleh setup cloudflare tunnel, dpaat kan tunnel-token dan masuk kan internal IP monitoring server.  
+10) Segala perubahan dalam file ansible boleh di lakukan di local PC sahaja dan push ke github. Github kan jalankan CICD dan deploy akan berjalan di ansible controller server secara automatic dan tidak perlu SSM ke ansible server untuk jalan kan ansible playbooks.  
+11) Boleh SSM ke Ansible controller server untuk run command di webserver dan monitoring server.  
+10) Untuk apps boleh di access melalui https://kapal.fareezizzudinothman.com  
+11) Untuk monitoring prometheus di access melalui https://prometheus.fareezizzudinothman.com  
+12) Untuk monitoring Grafana di access melalui https://grafana.fareezizzudinothman.com (username = admin, password =admin)  
+13) Github Page access di sini ya https://devops.fareezizzudinothman.com/  
+
+Selebihnya Cikgu refer dekat bawah la ya. Terima Kasih Cikgu.
 
 
 # AWS DevOps Bootcamp Project
