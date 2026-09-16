@@ -440,16 +440,18 @@ resource "aws_iam_role_policy" "github_actions_terraform_read" {
 
         Action = [
           "ec2:DescribeAddresses",
+          "ec2:DescribeAddressesAttribute",
           "ec2:DescribeImages",
           "ec2:DescribeInstances",
           "ec2:DescribeSecurityGroups",
+          "ec2:DescribeSecurityGroupRules",
           "ec2:DescribeSubnets",
           "ec2:DescribeVpcs",
+          "ec2:DescribeVpcAttribute",
           "ec2:DescribeRouteTables",
           "ec2:DescribeInternetGateways",
           "ec2:DescribeNatGateways",
-          "ec2:DescribeAddressesAttribute",
-          "ec2:DescribeVpcAttribute"
+          "ec2:DescribeNetworkAcls"
         ]
 
         Resource = "*"
@@ -464,6 +466,7 @@ resource "aws_iam_role_policy" "github_actions_terraform_read" {
           "iam:GetRole",
           "iam:GetRolePolicy",
           "iam:ListRolePolicies",
+          "iam:ListAttachedRolePolicies",
           "iam:GetInstanceProfile",
           "iam:GetOpenIDConnectProvider"
         ]
