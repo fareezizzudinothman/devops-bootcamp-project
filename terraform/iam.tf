@@ -314,7 +314,19 @@ resource "aws_iam_role_policy" "github_actions_ssm" {
         Effect = "Allow"
 
         Action = [
-          "ssm:SendCommand",
+          "ssm:SendCommand"
+        ]
+
+        Resource = [
+          module.node2.arn
+        ]
+      },
+
+      {
+        Sid    = "SSMCommandInvocation"
+        Effect = "Allow"
+
+        Action = [
           "ssm:GetCommandInvocation"
         ]
 

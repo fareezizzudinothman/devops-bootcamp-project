@@ -51,6 +51,69 @@ jobs:
       - name: Build application
         run: npm run build
 
+  terraform:
+    name: Terraform Validate & Plan
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: terraform
+
+    steps:
+
+      # -----------------------------------------------------
+      # Checkout source code
+      # -----------------------------------------------------
+
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      # -----------------------------------------------------
+      # Setup Terraform
+      # -----------------------------------------------------
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      # -----------------------------------------------------
+      # Configure AWS using GitHub OIDC
+      # -----------------------------------------------------
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: arn:aws:iam::990723917403:role/devops-github-actions-role
+          aws-region: ${{ env.AWS_REGION }}
+
+      # -----------------------------------------------------
+      # Terraform Format Check
+      # -----------------------------------------------------
+
+      - name: Terraform Format Check
+        run: terraform fmt -check -recursive
+
+      # -----------------------------------------------------
+      # Terraform Init
+      # -----------------------------------------------------
+
+      - name: Terraform Init
+        run: terraform init
+
+      # -----------------------------------------------------
+      # Terraform Validate
+      # -----------------------------------------------------
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      # -----------------------------------------------------
+      # Terraform Plan
+      # -----------------------------------------------------
+
+      - name: Terraform Plan
+        run: terraform plan
+
 #Merge PR
   build-and-push:
     name: Build and Push Docker Image
