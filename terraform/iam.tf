@@ -443,6 +443,9 @@ resource "aws_iam_role_policy" "github_actions_terraform_read" {
           "ec2:DescribeAddressesAttribute",
           "ec2:DescribeImages",
           "ec2:DescribeInstances",
+          "ec2:DescribeInstanceAttribute",
+          "ec2:DescribeInstanceCreditSpecifications",
+          "ec2:DescribeInstanceTypes",
           "ec2:DescribeSecurityGroups",
           "ec2:DescribeSecurityGroupRules",
           "ec2:DescribeSubnets",
@@ -451,7 +454,9 @@ resource "aws_iam_role_policy" "github_actions_terraform_read" {
           "ec2:DescribeRouteTables",
           "ec2:DescribeInternetGateways",
           "ec2:DescribeNatGateways",
-          "ec2:DescribeNetworkAcls"
+          "ec2:DescribeNetworkAcls",
+          "ec2:DescribeTags",
+          "ec2:DescribeVolumes"
         ]
 
         Resource = "*"
