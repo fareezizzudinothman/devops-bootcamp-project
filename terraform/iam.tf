@@ -319,7 +319,8 @@ resource "aws_iam_role_policy" "github_actions_ssm" {
         ]
 
         Resource = [
-          module.node2.arn
+          module.node2.arn,
+          "arn:aws:ssm:ap-southeast-1::document/AWS-RunShellScript"
         ]
       },
 
