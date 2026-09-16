@@ -363,3 +363,140 @@ resource "aws_iam_role_policy" "github_actions_ec2" {
     ]
   })
 }
+
+# =========================================================
+# GitHub Actions - Terraform Backend Permission
+# =========================================================
+
+resource "aws_iam_role_policy" "github_actions_terraform_backend" {
+  name = "devops-github-actions-terraform-backend"
+  role = aws_iam_role.github_actions.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+
+    Statement = [
+
+      {
+        Sid    = "TerraformStateBucket"
+        Effect = "Allow"
+
+        Action = [
+          "s3:GetBucketLocation",
+          "s3:ListBucket"
+        ]
+
+        Resource = "arn:aws:s3:::devops-bootcamp-terraform-fareezizzudinothman"
+      },
+
+      {
+        Sid    = "TerraformStateObject"
+        Effect = "Allow"
+
+        Action = [
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:DeleteObject"
+        ]
+
+        Resource = "arn:aws:s3:::devops-bootcamp-terraform-fareezizzudinothman/terraform/terraform.tfstate"
+      },
+
+      {
+        Sid    = "TerraformStateLock"
+        Effect = "Allow"
+
+        Action = [
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:DeleteObject"
+        ]
+
+        Resource = "arn:aws:s3:::devops-bootcamp-terraform-fareezizzudinothman/terraform/terraform.tfstate.tflock"
+      }
+    ]
+  })
+}
+
+
+# =========================================================
+# GitHub Actions - Terraform Read Permissions
+# Used by terraform plan
+# =========================================================
+
+resource "aws_iam_role_policy" "github_actions_terraform_read" {
+  name = "devops-github-actions-terraform-read"
+  role = aws_iam_role.github_actions.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+
+    Statement = [
+
+      # EC2 read access
+      {
+        Sid    = "EC2Read"
+        Effect = "Allow"
+
+        Action = [
+          "ec2:DescribeAddresses",
+          "ec2:DescribeImages",
+          "ec2:DescribeInstances",
+          "ec2:DescribeSecurityGroups",
+          "ec2:DescribeSubnets",
+          "ec2:DescribeVpcs",
+          "ec2:DescribeRouteTables",
+          "ec2:DescribeInternetGateways",
+          "ec2:DescribeNatGateways",
+          "ec2:DescribeAddressesAttribute",
+          "ec2:DescribeVpcAttribute"
+        ]
+
+        Resource = "*"
+      },
+
+      # IAM read access
+      {
+        Sid    = "IAMRead"
+        Effect = "Allow"
+
+        Action = [
+          "iam:GetRole",
+          "iam:GetRolePolicy",
+          "iam:ListRolePolicies",
+          "iam:GetInstanceProfile",
+          "iam:GetOpenIDConnectProvider"
+        ]
+
+        Resource = "*"
+      },
+
+      # ECR read access
+      {
+        Sid    = "ECRRead"
+        Effect = "Allow"
+
+        Action = [
+          "ecr:DescribeRepositories",
+          "ecr:GetRepositoryPolicy",
+          "ecr:GetLifecyclePolicy",
+          "ecr:ListTagsForResource"
+        ]
+
+        Resource = "*"
+      },
+
+      # SSM read access
+      {
+        Sid    = "SSMRead"
+        Effect = "Allow"
+
+        Action = [
+          "ssm:GetParameter"
+        ]
+
+        Resource = "*"
+      }
+    ]
+  })
+}
